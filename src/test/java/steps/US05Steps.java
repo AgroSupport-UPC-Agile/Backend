@@ -34,11 +34,13 @@ public class US05Steps {
     public void haga_clic_en_boton_calificar_servicio() {
         // Simular clic en botón calificar servicio
     }
-    
-    @Then("el sistema le permitirá asignarle un {int} y reseñar el servicio del asesor.")
-    public void sistema_permitira_asignar_calificacion_y_resenar(Integer calificacion) {
-        this.calificacion = calificacion;
-        // Verificar que se permite asignar calificación y reseña
+
+    @Then("el sistema le permitirá asignarle un {string} y reseñar {string} del servicio del asesor.")
+    public void el_sistema_le_permitirá_asignarle_calificacion_y_resenar_comentario(String calificacion, String comentario) {
+        // Implementar la lógica para verificar que el sistema permite asignar calificación y reseña
+        // Por ejemplo:
+        // verificarAsignacionCalificacion(calificacion);
+        // verificarRegistroComentario(comentario);
     }
     
     @Given("el {string} con poca experiencia no desea dar feedback al asesor referente al servicio.")
@@ -56,4 +58,5 @@ public class US05Steps {
     public void sistema_permitira_omitir_resena() {
         // Verificar que se permite omitir la reseña
     }
+
 }

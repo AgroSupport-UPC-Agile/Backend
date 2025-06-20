@@ -4,11 +4,11 @@ Feature: US05 Calificación del asesor luego de una cita
   para ayudar a otros granjeros a tomar una decisión informada antes de separar una cita.
 
   Scenario Outline: Calificar al asesor
-    Given el <granjero> con poca experiencia desea hacer un feedback referente al servicio del asesor.
+    Given el "<granjero>" con poca experiencia desea hacer un feedback referente al servicio del asesor.
     And se encuentra en la vista de historial de asesorías.
-    And selecciona una <asesoria> sin reseña.
-    When haga clic en el botón “Calificar Servicio” en la interfaz.
-    Then el sistema le permitirá asignarle un <numero de estrellas> y reseñar el servicio del asesor.
+    And selecciona una "<cita asesoría>" sin reseña.
+    When haga clic en el botón "Calificar Servicio" en la interfaz.
+    Then el sistema le permitirá asignarle un "<calificación>" y reseñar "<comentario>" del servicio del asesor.
 
     Examples:
       | granjero | cita asesoría  | calificación | comentario     |
@@ -16,10 +16,10 @@ Feature: US05 Calificación del asesor luego de una cita
       | María    | 22/10 05:00 PM | 5            | Lo recomiendo! |
 
   Scenario Outline: Omitir Calificación
-    Given el <granjero> con poca experiencia no desea dar feedback al asesor referente al servicio.
+    Given el "<granjero>" con poca experiencia no desea dar feedback al asesor referente al servicio.
     And se encuentra en la vista de historial de asesorías.
-    And selecciona una <asesoria> sin reseña.
-    When haga clic en el botón “Omitir Calificación” en la interfaz.
+    And selecciona una "<cita asesoría>" sin reseña.
+    When haga clic en el botón "Omitir Calificación" en la interfaz.
     Then el sistema le permitirá omitir la reseña.
 
     Examples:

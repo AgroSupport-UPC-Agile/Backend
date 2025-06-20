@@ -53,4 +53,21 @@ public class US02Steps {
         this.mensajeError = mensaje;
         // Verificar que se muestra el mensaje de error
     }
+
+    @Given("el {string} con poca experiencia quiere ver {string} relevante del asesor.")
+    public void el_con_poca_experiencia_quiere_ver_informacion_relevante_del_asesor(String granjero, String informacion) {
+        this.granjero = granjero;
+        this.informacion = informacion;
+        // Simular que el granjero quiere ver información relevante
+    }
+    @Then("el sistema le mostrará un No encontrado de error de carga en la interfaz móvil.")
+    public void el_sistema_le_mostrará_un_no_encontrado_de_error_de_carga_en_la_interfaz_móvil() {
+        this.mensajeError = "No encontrado";
+        // Aquí puedes simular la verificación del mensaje de error
+    }
+    @Then("el sistema le mostrará un Error interno de error de carga en la interfaz móvil.")
+    public void el_sistema_le_mostrará_un_error_interno_de_error_de_carga_en_la_interfaz_móvil() {
+        this.mensajeError = "Error interno";
+        // Aquí puedes simular la verificación del mensaje de error
+    }
 }

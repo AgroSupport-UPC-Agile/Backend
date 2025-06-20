@@ -10,8 +10,8 @@ Feature: US01 Visualización del catálogo de asesores
 
     Examples:
       | granjero | lista de asesores              |
-      | Martin   | Luis A., Marco S., Marta M.    |
-      | Nadia    | Nicolás M., Luisa C., Óscar L. |
+      | "Martin"   | "Luis A., Marco S., Marta M."    |
+      | "Nadia"    | "Nicolás M., Luisa C., Óscar L." |
 
   Scenario Outline: Filtrar la búsqueda de asesores
     Given que <granjero> está en la sección de asesores
@@ -20,5 +20,5 @@ Feature: US01 Visualización del catálogo de asesores
 
     Examples:
       | granjero | criterio de filtro | asesores filtrados         |
-      | Martin   | Nombre            | Luis A., Marco S.          |
-      | Nadia    | Reputación        | Nicolás M., Luisa C.       |
+      | "Martin"  | "Nombre"            | "Luis A., Marco S."          |
+      | "Nadia"    | "Reputación"        | "Nicolás M., Luisa C."       |
