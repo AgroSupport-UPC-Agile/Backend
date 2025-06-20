@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: agrosupport-config
+data:
+  MYSQL_HOST: mysql-service
+  MYSQL_PORT: "3306"
+  MYSQL_DATABASE: agrosupport
+  SPRING_PROFILES_ACTIVE: prod
+  authorization.jwt.secret: 4f1feeca525de4cdb064656007da3edac7895a87ff0ea865693300fb8b6e8f9c
+  authorization.jwt.expiration.days: "31"
