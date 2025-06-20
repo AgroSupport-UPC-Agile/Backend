@@ -7,7 +7,8 @@ on:
     branches: [ "main" ]
 
 jobs:
-  deploy:
+  ci:
+    name: Build & Push Docker Image
     runs-on: ubuntu-latest
 
     env:
@@ -28,7 +29,10 @@ jobs:
       - name: Make mvnw executable
         run: chmod +x mvnw
 
-      - name: Validate y test con Maven
+      - name: Run tests with Maven
+        run: ./mvnw test -Dspring.profiles.active=test
+
+      - name: Build with Maven
         run: ./mvnw clean verify -DskipTests
 
       - name: Set up Docker
@@ -44,26 +48,37 @@ jobs:
       - name: Login to AWS ECR
         uses: aws-actions/amazon-ecr-login@v1
 
-      - name: Build Docker image
+      - name: Build and Push Docker Image
         run: |
           docker build -t agrosupport:$IMAGE_TAG .
           docker tag agrosupport:$IMAGE_TAG $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
 
-      - name: Push Docker image to ECR
-        run: docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+  cd:
+    name: Deploy to EKS
+    runs-on: ubuntu-latest
+    needs: ci
+
+    env:
+      ECR_REGISTRY: 083618020834.dkr.ecr.us-east-2.amazonaws.com
+      ECR_REPOSITORY: agrosupport
+      IMAGE_TAG: ${{ github.sha }}
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-2
 
       - name: Update kubeconfig for EKS
-        env:
-          EKS_CLUSTER_NAME: ${{ secrets.EKS_CLUSTER_NAME }}
-        run: |
-          echo "🔧 Actualizando kubeconfig..."
-          aws eks update-kubeconfig --name "$EKS_CLUSTER_NAME" --region us-east-2
-          echo "🧾 Verificando identidad de AWS:"
-          aws sts get-caller-identity
-          echo "🔍 Verificando acceso a nodos de EKS:"
-          kubectl get nodes || echo "❌ Aún no se puede autenticar con el clúster"
+        run: aws eks update-kubeconfig --name ${{ secrets.EKS_CLUSTER_NAME }} --region us-east-2
 
-      - name: Deploy to EKS
+      - name: Apply Kubernetes manifests
         run: |
           kubectl apply -f k8s/mysql-secret.yaml --validate=false
           kubectl apply -f k8s/mysql-pvc.yaml --validate=false
