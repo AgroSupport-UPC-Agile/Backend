@@ -52,16 +52,11 @@ jobs:
       - name: Push Docker image to ECR
         run: docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
 
-      - name: Verificar identidad de AWS
-        run: aws sts get-caller-identity
-
       - name: Update kubeconfig for EKS
-        env:
-          EKS_CLUSTER_NAME: ${{ secrets.EKS_CLUSTER_NAME }}
         run: |
-          aws eks update-kubeconfig --name "$EKS_CLUSTER_NAME" --region us-east-2
-          echo "=== ~/.kube/config ==="
-          cat ~/.kube/config
+          aws eks update-kubeconfig --region us-east-2 --name ${{ secrets.EKS_CLUSTER_NAME }}
+          aws sts get-caller-identity
+          kubectl get svc || echo "Aún no se puede autenticar con el cluster"
 
       - name: Verificar acceso a EKS con kubectl
         run: kubectl get nodes
