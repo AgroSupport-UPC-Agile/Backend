@@ -11,18 +11,16 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Deploy to Render (Staging)
+      - name: Deploy to staging
         run: curl -X POST ${{ secrets.RENDER_DEPLOY_HOOK_STAGING }}
 
-      - name: Create Pull Request to main
-        if: success()
+      - name: Create pull request to main
         uses: peter-evans/create-pull-request@v6
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           base: main
-          head: test-release
-          title: "Release: release → main"
+          branch: release-to-main-${{ github.run_id }}
+          title: "Release: ${{ github.ref_name }} → main"
           body: |
-            Solicitud de despliegue a producción.
-            Verifica el entorno de staging antes de aprobar el merge.
-          draft: false
+            PR automático desde la rama `${{ github.ref_name }}`
+            Validar staging antes de hacer merge a producción.
