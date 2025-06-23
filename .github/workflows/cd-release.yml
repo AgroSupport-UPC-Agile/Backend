@@ -5,16 +5,23 @@ on:
     branches: [release]
 
 jobs:
-  deploy-and-pr:
+  deploy-and-create-pr:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-      - name: Deploy to staging
+      - name: Ensure correct branch and sync
+        run: |
+          git fetch origin release
+          git checkout release
+          git reset --hard origin/release
+
+      - name: Deploy to staging (Render)
         run: curl -X POST ${{ secrets.RENDER_DEPLOY_HOOK_STAGING }}
 
-      - name: Create pull request to main
+      - name: Create Pull Request to main
         uses: peter-evans/create-pull-request@v6
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -22,5 +29,7 @@ jobs:
           branch: release-to-main-${{ github.run_id }}
           title: "Release: ${{ github.ref_name }} → main"
           body: |
-            PR automático desde la rama `${{ github.ref_name }}`
-            Validar staging antes de hacer merge a producción.
+            Pull Request automático desde la rama `${{ github.ref_name }}`
+            Validar el entorno staging antes de aprobar el merge a producción.
+          commit-message: "chore(ci): create PR from release to main"
+          path: .
