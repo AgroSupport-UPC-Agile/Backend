@@ -29,7 +29,7 @@ jobs:
         run: ./mvnw clean verify -Dspring.profiles.active=test
 
       - name: Run tests with Maven
-        run: ./mvnw test -Dspring.profiles.active=test
+        run: ./mvnw test -Dspring.profiles.active=test -Dspring.jpa.properties.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
 
       - name: Merge develop into release
         if: success()
