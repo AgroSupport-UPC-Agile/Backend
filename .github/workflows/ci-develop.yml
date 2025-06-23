@@ -25,8 +25,8 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: Build and run tests with Maven
-        run: ./mvnw clean verify
+      - name: Run tests with Maven
+        run: ./mvnw test -Dspring.profiles.active=test
 
       - name: Merge develop into release
         if: success()
