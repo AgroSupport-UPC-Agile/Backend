@@ -2,28 +2,37 @@ name: CD Test-Release
 
 on:
   push:
-    branches:
-      - 'release/**'
+    branches: [release]
+
+permissions:
+  contents: write
+  pull-requests: write
 
 jobs:
-  deploy-and-pr:
+  deploy-and-create-pr:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-      - name: Deploy to Render (Staging)
+      - name: Sync release branch
+        run: |
+          git fetch origin
+          git checkout release
+          git reset --hard origin/release
+
+      - name: Deploy to staging (Render)
         run: curl -X POST ${{ secrets.RENDER_DEPLOY_HOOK_STAGING }}
 
-      - name: Create Pull Request to main
-        if: success()
+      - name: Create Pull Request to main from release
         uses: peter-evans/create-pull-request@v6
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           base: main
-          head: test-release
+          branch: release-to-main-${{ github.run_id }}
           title: "Release: release → main"
           body: |
-            Solicitud de despliegue a producción.
-            Verifica el entorno de staging antes de aprobar el merge.
-          draft: false
+            Pull request automático generado desde la rama `release`
+            Validar el entorno de staging antes de aprobar el merge a producción.
+          commit-message: "chore(ci): create PR from release to main"
