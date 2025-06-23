@@ -1,4 +1,4 @@
-name: CI/CD Develop to Test
+name: CI/CD Develop to Release
 
 on:
   push:
@@ -16,7 +16,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Fix permissions for mvnw
+      - name: Set permissions for mvnw
         run: chmod +x ./mvnw
 
       - name: Set up JDK 17
@@ -24,6 +24,9 @@ jobs:
         with:
           java-version: '17'
           distribution: 'temurin'
+
+      - name: Build and verify with Maven
+        run: ./mvnw clean verify -Dspring.profiles.active=test
 
       - name: Run tests with Maven
         run: ./mvnw test -Dspring.profiles.active=test
