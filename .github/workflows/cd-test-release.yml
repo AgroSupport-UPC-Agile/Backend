@@ -1,0 +1,28 @@
+name: CD Test-Release
+
+on:
+  push:
+    branches: [test-release]
+
+jobs:
+  deploy-and-pr:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Deploy to Render (Staging)
+        run: curl -X POST ${{ secrets.RENDER_DEPLOY_HOOK_STAGING }}
+
+      - name: Create Pull Request to main
+        if: success()
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          base: main
+          head: test-release
+          title: "Release: test-release → main"
+          body: |
+            Solicitud de despliegue a producción.
+            Verifica el entorno de staging antes de aprobar el merge.
+          draft: false
