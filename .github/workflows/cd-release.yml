@@ -2,8 +2,7 @@ name: CD Test-Release
 
 on:
   push:
-    branches:
-      - 'release/**'
+    branches: [release]
 
 jobs:
   deploy-and-pr:
