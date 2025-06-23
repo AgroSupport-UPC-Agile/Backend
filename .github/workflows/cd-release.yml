@@ -2,7 +2,8 @@ name: CD Test-Release
 
 on:
   push:
-    branches: [test-release]
+    branches:
+      - 'release/**'
 
 jobs:
   deploy-and-pr:
@@ -21,7 +22,7 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           base: main
           head: test-release
-          title: "Release: test-release → main"
+          title: "Release: release → main"
           body: |
             Solicitud de despliegue a producción.
             Verifica el entorno de staging antes de aprobar el merge.
